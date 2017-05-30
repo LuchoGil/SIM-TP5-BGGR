@@ -11,12 +11,12 @@ package tp5.sim;
  */
 public class Auto {
     
-    private int estado;//1- estacionado sin infraccion 2- estacionado con infraccion 3- sin estacionar
+    private int estado;//1- estacionado sin infraccion 2- estacionado con infraccion
     private int numero;
-    private int horaLlegada;
-    private int horaSalida;
+    private double horaLlegada;
+    private double horaSalida;
 
-    public Auto(int estado, int numero, int horaLlegada, int horaSalida) {
+    public Auto(int estado, int numero, double horaLlegada, double horaSalida) {
         this.estado = estado;
         this.numero = numero;
         this.horaLlegada = horaLlegada;
@@ -31,11 +31,11 @@ public class Auto {
         return numero;
     }
 
-    public int getHoraLlegada() {
+    public double getHoraLlegada() {
         return horaLlegada;
     }
 
-    public int getHoraSalida() {
+    public double getHoraSalida() {
         return horaSalida;
     }
 
@@ -47,11 +47,11 @@ public class Auto {
         this.numero = numero;
     }
 
-    public void setHoraLlegada(int horaLlegada) {
+    public void setHoraLlegada(double horaLlegada) {
         this.horaLlegada = horaLlegada;
     }
 
-    public void setHoraSalida(int horaSalida) {
+    public void setHoraSalida(double horaSalida) {
         this.horaSalida = horaSalida;
     }
 

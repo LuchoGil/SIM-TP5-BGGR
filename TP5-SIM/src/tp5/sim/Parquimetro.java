@@ -14,11 +14,13 @@ public class Parquimetro {
     public double getTiempoSobra(){
         return tiempoSobra;
     }
-    public void actualizarTiempo(double tiempoADescontar){
-        tiempoSobra-=tiempoADescontar;
-        if(tiempoSobra<0){
-            tiempoSobra=0;
-        }
+
+    public double getHoraFin() {
+        return horaFin;
+    }   
+    
+    public void actualizarTiempo(double tiempo){
+        this.horaFin += tiempo;       
     }
     public void ocupar(){
         estado=1;

@@ -8,13 +8,15 @@ public class Gestor {
     private int contAutosConInfraccion;
     private int iteraciones;
 
-    private double[] horaFin; //la pos es el id del parquimetro
+       
     private double proxLlegada;
     private double reloj;
     double[] tEntreLlegadas;
+    private int numeroAuto = 1;
 
     private Parquimetro[] parquimetros;
-
+    private Auto[] autos;
+    
     public Gestor(int cant) {
         this.contAutosSiEstacionaron = 0;
         this.contAutosSinLugar = 0;
@@ -22,8 +24,10 @@ public class Gestor {
         this.contAutosConInfraccion = 0;
         this.iteraciones = cant;
         this.tEntreLlegadas = new double[2];
-        this.horaFin = new double[24];
-        this.parquimetros = new Parquimetro[24];
+        
+        this.autos = new Auto[25];
+        this.parquimetros = new Parquimetro[25];
+        
     }
 
     /*
@@ -31,26 +35,27 @@ public class Gestor {
      */
     
     public void evento() {
+        
         int posMin = 0; //la menor de las horas
-        for (int i = 1; i < horaFin.length; i++) {
-            if (horaFin[i] != 0) //si es 0 no comparo, significa que no esta en uso ese parq
+        for (int i = 1; i < autos.length; i++) {
+            if (autos[i].getHoraSalida() >= reloj) //si es 0 no comparo, significa que no esta en uso ese parq
             {
-                if (horaFin[posMin] >= horaFin[i]) {
+                if (autos[posMin].getHoraSalida() >= autos[i].getHoraSalida()) {
                     posMin = i;
                 }
             }
         }
-        if (proxLlegada < posMin) { //entonces genero una llegada
+        
+        if (proxLlegada <  autos[posMin].getHoraSalida()) { //entonces genero una llegada
             //actualizar tiemposss
             reloj = proxLlegada;
             llegadaAuto();
 
         } else {
             //actualizar
-            reloj = horaFin[posMin];
+            reloj = autos[posMin].getHoraSalida();
             this.contParquimetrosOcupados--;
-            finEstacionamiento(posMin);
-            horaFin[posMin] = 0; //cuando el parquimetro se desocupa, su horaFin esta en 0
+            finEstacionamiento(posMin);            
         }
     }
 
@@ -58,46 +63,43 @@ public class Gestor {
     calculos para el evento llegada Auto
      */
     private void llegadaAuto() {
+        
+        controlarParquimetros();//recorre el vector y verifica las hroas de los autos y el tiempo de los parquimetros.
+        
         int tiempoTurno;
         int posParquimetro; //parquimetro num
         if (!(this.contParquimetrosOcupados <= 25)) { //si no es menor o igual a 25 no tiene lugar
             this.contAutosSinLugar++;
         } else { //si tiene lugar
-            tiempoTurno = this.turno();
+            tiempoTurno = this.turno();            
             posParquimetro = this.buscarParquimetroLibre();
+            
+            Auto a = new Auto(1,numeroAuto,reloj,reloj+tiempoTurno);//creo el auto
+            
             switch (tipoUso()) {
-                case 0: //no pone monedas
-                    if (parquimetros[posParquimetro].getTiempoSobra() < tiempoTurno) {
-                        this.contAutosConInfraccion++;
-                    }
-                    horaFin[posParquimetro] = reloj + tiempoTurno;
+                case 0: //no pone monedas                    
+                    autos[posParquimetro].setHoraSalida(reloj + tiempoTurno);
                     parquimetros[posParquimetro].ocupar();
                     this.contParquimetrosOcupados++;
                     break;
                 case 1: //usa menos del tiempo del turno
                     double tiempo = Generador.uniforme(50 * tiempoTurno / 100, 95 * tiempoTurno / 100);
-                    if (parquimetros[posParquimetro].getTiempoSobra() < tiempo) {
-                        this.contAutosConInfraccion++;
-                    }
+                    a.setHoraSalida(reloj+tiempo);                   
                     parquimetros[posParquimetro].ocupar();
                     parquimetros[posParquimetro].actualizarTiempo(tiempo);
                     this.contParquimetrosOcupados++;
-                    horaFin[posParquimetro] = reloj + tiempo;
                     break;
-                case 2: //usa el tiempo exacto
+                case 2: //usa el tiempo exacto                    
                     parquimetros[posParquimetro].ocupar();
-                    this.contParquimetrosOcupados++;
-                    horaFin[posParquimetro] = reloj + tiempoTurno;
+                    parquimetros[posParquimetro].actualizarTiempo(tiempoTurno);
+                    this.contParquimetrosOcupados++;                    
                     break;
                 case 3: //usa mas del tiempo
                     double tExtra = Generador.uniforme(5 * tiempoTurno / 100, 15 * tiempoTurno / 100);
-                    if (parquimetros[posParquimetro].getTiempoSobra() < (tiempoTurno + tExtra)) {
-                        this.contAutosConInfraccion++;
-                    }
+                    a.setHoraSalida(reloj+tiempoTurno+tExtra);                   
                     parquimetros[posParquimetro].ocupar();
-                    parquimetros[posParquimetro].actualizarTiempo(tiempoTurno + tExtra);
-                    this.contParquimetrosOcupados++;
-                    horaFin[posParquimetro] = reloj + tiempoTurno + tExtra;
+                    parquimetros[posParquimetro].actualizarTiempo(tiempoTurno);
+                    this.contParquimetrosOcupados++;                    
                     break;
             }
 
@@ -173,6 +175,20 @@ private int buscarParquimetroLibre(){
         if(random >= 0.00 && random <= 0.39) 
             return 1;
         return 2;               
+    }
+
+    private void controlarParquimetros() //controla infracciones y cambia de estadode los atos infractores 
+    { 
+        for (int i = 0; i <= 25 ; i++) {
+            if(parquimetros[i].getHoraFin() < reloj){
+                if((autos[i].getEstado() == 1) && (autos[i].getHoraSalida() > reloj)) {                
+                    this.contAutosConInfraccion++;
+                    autos[i].setEstado(2);
+                }
+            }            
+            
+        }
+        
     }
     
     
