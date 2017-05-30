@@ -29,6 +29,7 @@ public class Gestor {
     /*
     decide cual es el evento proximo y lo ejecuta
      */
+    
     public void evento() {
         int posMin = 0; //la menor de las horas
         for (int i = 1; i < horaFin.length; i++) {
