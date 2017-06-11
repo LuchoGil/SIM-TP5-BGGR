@@ -1,6 +1,6 @@
 package tp5.sim;
 
-import javax.swing.JFrame;
+import java.util.ArrayList;
 
 public class Gestor {
 
@@ -25,6 +25,8 @@ public class Gestor {
     private int posParquimetro;
     private int posMin;
     private boolean banLlegada=true;
+    private boolean banInfracciones = false;
+    private ArrayList autosConInfraccionesEnEsteEvento; //creo un array ist de ints que que son as posiciones de vector que se producieron infraccion
     
     public Gestor(double tiempoLimite, int cant, double tInicialAMostrar) { //tiempo de corte, y cantidad de parquimetros  
         this.contAutosSiEstacionaron = 0;
@@ -44,14 +46,19 @@ public class Gestor {
             autos[i] = new Auto();
             parquimetros[i] = new Parquimetro();
         }
+        this.autosConInfraccionesEnEsteEvento = new ArrayList();
     }
 
     /*
      decide cual es el evento proximo y lo ejecuta
      */
     private String evento() {
+        this.banInfracciones = false;
+        this.autosConInfraccionesEnEsteEvento.clear();
+        
         String evento = "";
         int posMin = 0; //la menor de las horas // ESTABA COMENTANDO POR ESO CREO QUE FALLABA
+        
 
 //        while(posMin<autos.length-1 && autos[posMin]==null)
 //        {
@@ -66,9 +73,11 @@ public class Gestor {
                         posMin = i;
                     }
                 }
-//                this.controlarParquimetros(i); //para ahorrar un for, controla mientras busca el menor
+                    this.controlarParquimetros(i); //para ahorrar un for, controla mientras busca el menor
             }
         }
+        
+        
         if (autos[posMin].getEstado() == 3 || proxLlegada <= autos[posMin].getHoraSalida()) { //entonces genero una llegada
 //            System.out.println("Proxima llegada inicial: " + proxLlegada);
             reloj = proxLlegada;
@@ -280,8 +289,11 @@ public class Gestor {
                 if ((autos[i].getEstado() == 1) && (autos[i].getHoraSalida() > reloj)) {
                     this.contAutosConInfraccion++;
                     autos[i].setEstado(2);
+                    this.banInfracciones = true;
+                    this.autosConInfraccionesEnEsteEvento.add(i);
                 }
             }
         
     }
+    
 }
