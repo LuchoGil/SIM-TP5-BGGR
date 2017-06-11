@@ -30,12 +30,22 @@ public class Generador {
     
     public static double[] normalBM(double desv,double media){
         double rnd1 =(double) Math.random();
+//        System.out.println("Random1 "+rnd1);
+        
         double rnd2 =(double) Math.random();
-        double vec[]=new double[2];
+//        System.out.println("Random2 "+rnd2);
+        
+        double vec[]=new double[4];
+        vec[2]=rnd1;
+        vec[3]=rnd2;
+        
         int truncado= (int) (((Math.sqrt((-2)*Math.log(rnd1))*Math.cos(2*3.1415*rnd2))*desv+media)*100);
         vec[0]=(double) truncado/100;
         int truncado2= (int) (((Math.sqrt((-2)*Math.log(rnd1))*Math.sin(2*3.1415*rnd2))*desv+media)*100);
         vec[1]=(double) truncado2/100;
+//        for (int i = 0; i < vec.length; i++) {
+//            System.out.println("Numero: "+vec[i]);
+//        }
         return vec;
     }
     
