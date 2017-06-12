@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -50,6 +51,8 @@ public class Ventana extends javax.swing.JFrame {
             return new GroupableTableHeader(columnModel);
       }
     };
+        table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+//        table.scrollRectToVisible(null);
   }
 
     public void cargarTablaTiempo() {
@@ -108,11 +111,11 @@ public class Ventana extends javax.swing.JFrame {
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(400, 200));
-        jPanel1.setLayout(new java.awt.GridLayout());
+        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel2.setLayout(new java.awt.GridLayout(6, 0));
 
-        jLabel1.setText("Reloj");
+        jLabel1.setText("Hora Fin Simulación");
         jPanel2.add(jLabel1);
         jPanel2.add(txt_reloj);
 
@@ -239,9 +242,8 @@ public class Ventana extends javax.swing.JFrame {
     JScrollPane scroll = new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     getContentPane().add( scroll );
     setSize( 400, 120 );
-    
     Gestor gestor=new Gestor(Double.parseDouble(txt_reloj.getText()),Integer.parseInt(txt_cantParquimetros.getText()),Double.parseDouble(txt_horaInicio.getText()));
-    gestor.simular(this);
+    gestor.simular(this,Integer.parseInt(this.txt_cantIteraciones.getText()));
     
     }//GEN-LAST:event_btn_simularActionPerformed
 
@@ -472,4 +474,38 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JTextField txt_horaInicio;
     private javax.swing.JTextField txt_reloj;
     // End of variables declaration//GEN-END:variables
+
+    void escribirInicioSimulacion(double reloj, String inicio, double rndTiempo1, double d, double tiempo1, double d0, double proxLlegada, int contAutosSinLugar, int contAutosConInfraccion, int contAutosSiEstacionaron) {
+    int c = dm.getColumnCount();
+        Object [] obj=new Object[c+2];
+        obj[0]=reloj;
+        obj[1]=inicio;
+        if(rndTiempo1==0)
+            obj[2]="-";
+        else
+            obj[2]=rndTiempo1;
+        if(d==0)
+            obj[3]="-";
+        else
+            obj[3]=d;
+        if(tiempo1==0)
+            obj[4]="-";
+        else
+            obj[4]=tiempo1;
+        if(d0==0)
+            obj[5]="-";
+        else
+            obj[5]=d0;
+        obj[6]=proxLlegada;
+        obj[7]="-";
+        obj[8]="-";
+        obj[9]="-";
+        obj[10]="-";
+        obj[11]="-";
+      
+      
+        dm.addRow(obj);
+        table.setModel(dm);
+    
+    }
 }

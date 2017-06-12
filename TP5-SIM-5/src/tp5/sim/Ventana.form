@@ -46,7 +46,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Reloj"/>
+                <Property name="text" type="java.lang.String" value="Hora Fin Simulaci&#xf3;n"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txt_reloj">
