@@ -51,7 +51,7 @@ public class Parquimetro {
             est="Libre sin saldo";
         
         if(estado==3)
-            est="Libre sin saldo";
+            est="Libre con saldo";
         
         return est;
     }

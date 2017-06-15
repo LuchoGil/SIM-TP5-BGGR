@@ -28,7 +28,7 @@ public class Gestor {
     private int posMin;
     private boolean banLlegada = true;
     private boolean banInfracciones = false;
-    private ArrayList<Integer> autosConInfraccionesEnEsteEvento; //creo un array ist de ints que que son as posiciones de vector que se producieron infraccion
+    private ArrayList autosConInfraccionesEnEsteEvento; //creo un array ist de ints que que son as posiciones de vector que se producieron infraccion
 
     public Gestor(double tiempoLimite, int cant, double tInicialAMostrar) { //tiempo de corte, y cantidad de parquimetros  
         this.contAutosSiEstacionaron = 0;
@@ -120,11 +120,11 @@ public class Gestor {
                 System.out.println("Parquimetros ocupados " + this.contParquimetrosOcupados);
 
                 if (evento == "Llegada Auto") {
-                    v.escribirLlegadaAuto(reloj, evento, rndTiempo1, tEntreLlegadas[3], tiempo1, tEntreLlegadas[1], proxLlegada, rndTurno, turno, rndTipo, condicion, tiempoEstacionado, autos, parquimetros, contAutosSinLugar, contAutosConInfraccion, contAutosSiEstacionaron, numeroAuto, posParquimetro, banLlegada);
+                    v.escribirLlegadaAuto(reloj, evento, rndTiempo1, tEntreLlegadas[3], tiempo1, tEntreLlegadas[1], proxLlegada, rndTurno, turno, rndTipo, condicion, tiempoEstacionado, autos, parquimetros, contAutosSinLugar, contAutosConInfraccion, contAutosSiEstacionaron, numeroAuto, posParquimetro, banLlegada, autosConInfraccionesEnEsteEvento);
                     //los indices de los autos que cambiaron estan en autosConInfraccionesEnEsteEvento
                 }
                 if (evento == "Fin Estacionamiento") {
-                    v.escribirFinEstacionamiento(reloj, evento, rndTiempo1, tEntreLlegadas[3], tiempo1, tEntreLlegadas[1], proxLlegada, autos, parquimetros, contAutosSinLugar, contAutosConInfraccion, contAutosSiEstacionaron, posMin);
+                    v.escribirFinEstacionamiento(reloj, evento, rndTiempo1, tEntreLlegadas[3], tiempo1, tEntreLlegadas[1], proxLlegada, autos, parquimetros, contAutosSinLugar, contAutosConInfraccion, contAutosSiEstacionaron, posMin, autosConInfraccionesEnEsteEvento);
                     //los indices de los autos que cambiaron estan en autosConInfraccionesEnEsteEvento
                 }
             }

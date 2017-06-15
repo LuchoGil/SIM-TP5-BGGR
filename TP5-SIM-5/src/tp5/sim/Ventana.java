@@ -1,6 +1,7 @@
 
 package tp5.sim;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -25,11 +26,6 @@ public class Ventana extends javax.swing.JFrame {
     super();
     initComponents();
         this.setExtendedState(MAXIMIZED_BOTH);
-//        modelo = new DefaultTableModel() {
-//            public boolean isCellEditable(int fila, int columna) {
-//                return false;
-//            }
-//        };
         modelo1 = new DefaultTableModel() {
             public boolean isCellEditable(int fila, int columna) {
                 return false;
@@ -51,7 +47,7 @@ public class Ventana extends javax.swing.JFrame {
             return new GroupableTableHeader(columnModel);
       }
     };
-        table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 //        table.scrollRectToVisible(null);
   }
 
@@ -250,7 +246,7 @@ public class Ventana extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void escribirLlegadaAuto(double reloj,String evento,double rnd1,double rnd2,double tiempo1,double tiempo2,double proxLlegada,double rndTurno,int turno,double rndCondicion,String condicion,double tiempoEstacionado, Auto[]autos,Parquimetro[]parquimetros,int contAutosSinLugar,int contAutosConInfraccion,int contAutosSiEstacionaron, int numeroAuto,int posParquimetro,boolean banLlegada)
+    public static void escribirLlegadaAuto(double reloj,String evento,double rnd1,double rnd2,double tiempo1,double tiempo2,double proxLlegada,double rndTurno,int turno,double rndCondicion,String condicion,double tiempoEstacionado, Auto[]autos,Parquimetro[]parquimetros,int contAutosSinLugar,int contAutosConInfraccion,int contAutosSiEstacionaron, int numeroAuto,int posParquimetro,boolean banLlegada,ArrayList autoConInfraccionesEnEsteEvento)
     {
 //        Object [] identificador= new Object[vector.length+cantidad];
 //        identificador=vector;
@@ -335,11 +331,32 @@ public class Ventana extends javax.swing.JFrame {
             obj[c-2]="Sin estacionar";
             obj[c-1]="-";
         }
+        
+        int ind=j+3;
+        for (int i = 0; i < autoConInfraccionesEnEsteEvento.size(); i++) 
+        {
+            int n=(int)autoConInfraccionesEnEsteEvento.get(i);
+            int numero=n+1;
+            int casa=0;
+            for (int k = ind; k < c; k++) 
+            {
+                Object info=dm.getValueAt(dm.getRowCount()-1,k);
+                if(info.getClass().isInstance(casa))
+                {
+                    int informacion=(int)info;
+                    if(informacion==numero)
+                    {
+                        obj[k-1]=autos[informacion].getEstado();
+                        break;
+                    }
+                }
+            }
+        }
         dm.addRow(obj);
         table.setModel(dm);
     }
     
-    public static void escribirFinEstacionamiento(double reloj, String evento,double rnd1, double rnd2,double tiempo1,double tiempo2,double proxLlegada,Auto[] autos, Parquimetro[] parquimetros,int contAutosSinLugar,int contAutosConInfraccion,int contAutosSiEstacionaron,int posMin)
+    public static void escribirFinEstacionamiento(double reloj, String evento,double rnd1, double rnd2,double tiempo1,double tiempo2,double proxLlegada,Auto[] autos, Parquimetro[] parquimetros,int contAutosSinLugar,int contAutosConInfraccion,int contAutosSiEstacionaron,int posMin,ArrayList autoConInfraccionesEnEsteEvento)
     {
         int c = dm.getColumnCount();
         Object [] obj=new Object[c];
@@ -378,7 +395,14 @@ public class Ventana extends javax.swing.JFrame {
         {
             obj[j]=parquimetros[i].getEstado();
             j++;
-            obj[j]="-";
+            if(parquimetros[i].getEstado()=="Libre con saldo")
+            {
+                obj[j]=parquimetros[i].getHoraFin();
+            }
+            else
+            {
+                obj[j]="-";
+            }
             j++;
         }
         obj[j]=contAutosSinLugar;
@@ -391,11 +415,11 @@ public class Ventana extends javax.swing.JFrame {
         for (int i = indice; i < c; i++) {
             Object informacion=dm.getValueAt(fila-1, i);
             int casa=0;
-            System.out.println("CLASE: "+informacion.getClass().isInstance(casa));
+//            System.out.println("CLASE: "+informacion.getClass().isInstance(casa));
 
             if(informacion.getClass().isInstance(casa))
             {
-                System.out.println("ENTRE");
+//                System.out.println("ENTRE");
                 int info = (int)informacion;
                 if(info == posMin+1)
                 {
@@ -421,7 +445,26 @@ public class Ventana extends javax.swing.JFrame {
             }
             i++;
         }
-        
+        int ind=j+3;
+        for (int i = 0; i < autoConInfraccionesEnEsteEvento.size(); i++) 
+        {
+            int n=(int)autoConInfraccionesEnEsteEvento.get(i);
+            int numero=n+1;
+            int casa=0;
+            for (int k = ind; k < c; k++) 
+            {
+                Object info=dm.getValueAt(dm.getRowCount()-1,k);
+                if(info.getClass().isInstance(casa))
+                {
+                    int informacion=(int)info;
+                    if(informacion==numero)
+                    {
+                        obj[k-1]=autos[informacion].getEstado();
+                        break;
+                    }
+                }
+            }
+        }
         dm.addRow(obj);
         table.setModel(dm);
     }
